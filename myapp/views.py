@@ -1,8 +1,19 @@
 from django.shortcuts import render
 
 # Create your views here.
+from myapp.models import Wheel, Nav, Mustbuy
+
+
 def home(request):
-    return render(request,'home/home.html')
+    wheels = Wheel.objects.all()
+    navs = Nav.objects.all()
+    must_buys = Mustbuy.objects.all()
+    data = {
+        'wheels': wheels,
+        'navs': navs,
+        'must_buys': must_buys,
+    }
+    return render(request,'home/home.html',context = data)
 
 
 def cart(request):
