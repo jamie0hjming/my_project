@@ -1,7 +1,7 @@
 {% extends 'base/base.html' %}
 {% load static %}
 {% block extcss %}
-    <link rel="stylesheet" href="{% static 'home/css/home.css' %}"
+    <link rel="stylesheet" href="{% static 'home/css/home.css' %}">
 {% endblock %}
 {% block extjs %}
     <script src="{% static 'home/js/home.js' %}"></script>
@@ -13,7 +13,7 @@
 
 {% block content %}
     <div class="home">
-        {#    轮播图#}
+{#    轮播图#}
         <div class="swiper-container" id="topSwiper">
             <div class="swiper-wrapper">
                 {% for wheel in wheels %}
@@ -29,7 +29,7 @@
             {#        <div class="swiper-button-prev"></div>#}
         </div>
 
-        {#    导航#}
+{#    导航#}
         <div class="nav">
             <ul>
                 {% for nav in navs %}
@@ -41,7 +41,7 @@
             </ul>
         </div>
 
-        {#    每日必购#}
+{#    每日必购#}
         <div class="swiper-container" id="mustbuySwiper">
             <div class="swiper-wrapper">
                 {% for must_buy in must_buys %}
@@ -51,5 +51,106 @@
                 {% endfor %}
             </div>
         </div>
+
+{#    商品部分#}
+        <div class='shop'>
+            <div class="shophead">
+                <a>
+                    <img src="{{ shophead.img }}">
+                </a>
+            </div>
+            <div class="shoptab">
+                {% for shoptab in shoptabs %}
+                    <a>
+                        <img src="{{ shoptab.img }}">
+                    </a>
+                {% endfor %}
+            </div>
+            <ul class="shopclass">
+                {% for shopclass in shopclasss %}
+                    <li>
+                        <a>
+                            <img src="{{ shopclass.img }}">
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+            <ul class="shopcommend">
+                {% for shopcommend in shopcommends %}
+                    <li>
+                        <a>
+                            <img src="{{ shopcommend.img }}">
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
     </div>
+{#    主体内容部分#}
+        <div class="main">
+        {% for mainshow in mainshows %}
+        <div class="main-wrapper">
+            <div class="title">{{ mainshow.name }}
+                <a href="#">
+                    更多
+                </a>
+                <span>
+
+                </span>
+            </div>
+
+            <div class="headimg">
+                <img src="{{ mainshow.img }}">
+            </div>
+            <ul class="shoplist">
+                <li class="shopitem">
+                    <a href="#">
+                        <img src="{{ mainshow.img1 }}" alt="" class="img">
+                        <div class="desc">{{ mainshow.long_name1 }}</div>
+                        <span class="price">￥{{ mainshow.price1 }}</span>
+                        <span class="marketprice">￥{{ mainshow.market_price1 }}</span>
+
+                    </a>
+                    <button>
+                        <span>+</span>
+                    </button>
+
+                </li>
+                <li class="shopitem">
+                    <a href="#">
+                        <img src="{{ mainshow.img2 }}" alt="" class="img">
+                        <div class="desc">{{ mainshow.long_name2 }}</div>
+                        <span class="price">￥{{ mainshow.price2 }}</span>
+                        <span class="marketprice">￥{{ mainshow.market_price2 }}</span>
+
+                    </a>
+                    <button>
+                        <span>+</span>
+                    </button>
+
+                </li>
+                <li class="shopitem">
+                    <a href="#">
+                        <img src="{{ mainshow.img3 }}" alt="" class="img">
+
+                        <div class="desc">{{ mainshow.long_name3 }}</div>
+                        <span class="price">￥{{ mainshow.price3 }}</span>
+                        <span class="marketprice">￥{{ mainshow.market_price3 }}</span>
+
+                    </a>
+                    <button>
+                        <span>+</span>
+                    </button>
+
+                </li>
+            </ul>
+        </div>
+
+        {% endfor %}
+
+
+
+
+
+        </div>
 {% endblock %}

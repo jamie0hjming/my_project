@@ -33,3 +33,38 @@ class Nav(Base):
 class Mustbuy(Base):
     class Meta:
         db_table = 'axf_mustbuy'
+
+class Shop(Base):
+    class Meta:
+        db_table = 'axf_shop'
+
+class Mainshow(models.Model):
+    track_id = models.CharField(max_length=20)
+    name = models.CharField(max_length=100)
+    img = models.CharField(max_length=256)
+    category_id = models.CharField(max_length=20)
+    brand_name = models.CharField(max_length=20)
+
+    img1 = models.CharField(max_length=256)
+    child_id1 = models.CharField(max_length=20)
+    product_id1 = models.CharField(max_length=20)
+    long_name1 = models.CharField(max_length=100)
+    price1 = models.FloatField()
+    market_price1 = models.FloatField()
+
+    img2 = models.CharField(max_length=256)
+    child_id2 = models.CharField(max_length=20)
+    product_id2 = models.CharField(max_length=20)
+    long_name2 = models.CharField(max_length=100)
+    price2 = models.FloatField()
+    market_price2 = models.FloatField()
+
+    img3 = models.CharField(max_length=256)
+    child_id3 = models.CharField(max_length=20)
+    product_id3 = models.CharField(max_length=20)
+    long_name3 = models.CharField(max_length=100)
+    price3 = models.FloatField()
+    market_price3 = models.FloatField()
+
+    class Meta:
+        db_table = 'axf_mainshow'
