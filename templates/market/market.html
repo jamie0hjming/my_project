@@ -1,13 +1,114 @@
 {% extends 'base/base.html' %}
 {% load static %}
 {% block extcss %}
-    <link rel="stylesheet" href="{% static 'market/css/market.css' %}"
+    <link rel="stylesheet" href="{% static 'market/css/market.css' %}">
 {% endblock %}
 
-{% block title %}
-          爱鲜蜂 | 闪购市场
+{% block extjs %}
+    <script src="{% static 'market/js/market.js' %}"></script>
 {% endblock %}
+{% block title %}
+    爱鲜蜂 | 闪购市场
+{% endblock %}
+
+
 
 {% block content %}
-          闪购市场
+    <div class="market">
+        {#    slider #}
+        <div class="type-slider">
+            <ul>
+                {% for food_type in food_types %}
+                    <li class="type-item active">
+                        <span></span>
+                        <a href="{% url 'myapp:market' food_type.type_id 0 0 %}">{{ food_type.type_name }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {#    nav#}
+        <nav>
+            <ul>
+                <li id="category_button">
+                <span>全部类型
+                    <i class="glyphicon glyphicon-triangle-top"></i>
+                </span>
+                </li>
+                <li id="sort_button">
+                <span>综合排序
+                    <i class="glyphicon glyphicon-triangle-top"></i>
+                </span>
+                </li>
+            </ul>
+        </nav>
+        {#主体商品列表#}
+        <div class="main-content">
+            {#        主体内容#}
+            <div class="content-wrapper">
+
+                <ul>
+                    {% for good in goods %}
+                        <li>
+                            <a href="#">
+                                <img src="{{ good.product_img }}" class="goods-img" alt="">
+                                <div class="goods-info">
+                                    <p class="name">{{ good.product_long_name }}</p>
+                                    <p class="detailtag">
+                                        {% if good.is_xf %}
+                                            <span class="xf">精选</span>
+                                        {% endif %}
+                                        <span>{{ good.product_num }}</span>
+                                    </p>
+                                    <p class="specifics">{{ good.specifics }}</p>
+                                    <div class="price">
+                                        <span class="now-price">{{ good.price }}</span>
+                                        <span class="market-price">{{ good.market_price }}</span>
+                                    </div>
+
+                                </div>
+
+                            </a>
+                               <div class="bt-wrapper">
+                                <span class="glyphicon glyphicon-minus"></span>
+                                <span class="num">8</span>
+                                <span class="glyphicon glyphicon-plus"></span>
+                            </div>
+                        </li>
+                    {% endfor %}
+
+
+                </ul>
+            </div>
+            {#            字类分类#}
+            <div class="bounce-view category-view">
+
+                <div class="bounce-wrapper ">
+                    {% for child_type_id_name in child_type_id_name_list %}
+                        <a href="{% url 'myapp:market' category_id child_type_id_name.type_child_id 0 %}"
+                           class="child_type">{{ child_type_id_name.type_child_name }}</a>
+                    {% endfor %}
+
+
+                </div>
+
+            </div>
+            <div class="bounce-view sort-view" >
+                <div class="bounce-wrapper">
+                    <a href="{% url 'myapp:market' category_id child_id 0 %}">综合排序</a>
+                    <a href="{% url 'myapp:market' category_id child_id 1 %}">销量排序</a>
+                    <a href="{% url 'myapp:market' category_id child_id 2 %}">价格最低</a>
+                    <a href="{% url 'myapp:market' category_id child_id 3 %}">价格最高</a>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+
 {% endblock %}
+
+
+

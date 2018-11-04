@@ -207,7 +207,7 @@ footer .home dd {
     border-radius: 50%;
     text-align: center;
     color: orangered;
-    line-height: 0;
+    line-height: 50%;
     background: white;
     position: absolute;
     right: 0.1rem;
@@ -215,5 +215,5 @@ footer .home dd {
     bottom: -0.5rem;
 }
 .main .main-wrapper .shoplist .shopitem button span{
-
+font-size: 1.2rem;
 }
