@@ -70,7 +70,7 @@ class Mainshow(models.Model):
         db_table = 'axf_mainshow'
 
 class Foodtypes(models.Model):
-    type_id = models.IntegerField(max_length=10)
+    type_id = models.IntegerField()
     type_name = models.CharField(max_length=100)
     child_type_names = models.CharField(max_length=256)
     type_sort = models.IntegerField()
@@ -79,7 +79,7 @@ class Foodtypes(models.Model):
         db_table = 'axf_foodtypes'
 
 class Goods(models.Model):
-    product_id = models.IntegerField(max_length=10)  # 商品ID
+    product_id = models.IntegerField()  # 商品ID
     product_img = models.CharField(max_length=100)  # 商品图片
     product_name = models.CharField(max_length=100)  # 商品名称
     product_long_name = models.CharField(max_length=100)  # 商品弄名称
@@ -91,9 +91,25 @@ class Goods(models.Model):
     category_id = models.IntegerField()  # 分类ID
     child_id = models.IntegerField()  # 子类ID
     child_id_name = models.CharField(max_length=100)  # 分类名称
-    dealer_id = models.IntegerField(max_length=10)  # 详情ID
+    dealer_id = models.IntegerField()  # 详情ID
     store_nums = models.IntegerField()  # 库存
     product_num = models.IntegerField()  # 销量
 
     class Meta:
         db_table = 'axf_goods'
+
+
+
+
+class User(models.Model):
+    account = models.CharField(max_length=80, unique=True)  # 账号 唯一约束
+    password = models.CharField(max_length=256)  # 密码
+    name = models.CharField(max_length=100)  # 名字
+    phone = models.CharField(max_length=20, unique=True)  # 手机号 唯一约束
+    addr = models.CharField(max_length=256)  # 地址
+    img = models.CharField(max_length=100)  # 头像
+    rank = models.IntegerField(default=1)  # 等级
+    token = models.CharField(max_length=256)  # token
+
+    class Meta:
+        db_table = 'axf_user'
