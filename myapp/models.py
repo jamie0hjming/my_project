@@ -113,3 +113,13 @@ class User(models.Model):
 
     class Meta:
         db_table = 'axf_user'
+
+
+class Cart(models.Model):
+    user = models.ForeignKey(User)  # 用户外键关联
+    goods = models.ForeignKey(Goods)  # 商品外建关联
+    num = models.IntegerField()  # 选购的商品数量
+    is_select = models.BooleanField(default=True)  # 是否被选中
+
+    class Meta:
+        db_table = 'axf_cart'

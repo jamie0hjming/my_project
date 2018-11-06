@@ -6,8 +6,7 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 
 # Create your views here.
-from myapp.models import Wheel, Nav, Mustbuy, Shop, Mainshow, Foodtypes, Goods, User
-
+from myapp.models import Wheel, Nav, Mustbuy, Shop, Mainshow, Foodtypes, Goods, User, Cart
 
 # 主页
 from myprojectaxf import settings
@@ -40,7 +39,18 @@ def home(request):
 
 # 购物车
 def cart(request):
-    return render(request, 'cart/cart.html')
+    token = request.session.get('token')
+
+    if token:
+        user = User.objects.get(token=token)
+        carts = Cart.objects.filter(user=user).exclude(num=0)
+        data = {
+            'carts':carts,
+        }
+        return render(request,'cart/cart.html',context=data)
+    else:
+
+        return render(request, 'mine/login.html')
 
 
 # 闪购超市
@@ -55,9 +65,6 @@ def market(request, category_id, child_id, sort_id):
     type_index = request.COOKIES.get('type_index', 0)
     # 得到所有侧栏主类
     food_types = Foodtypes.objects.all()
-
-    # print(child_type_id_list)
-
     food_type = food_types[int(type_index)]  # 得到对应主类
     category_id = food_type.type_id  # 对应主类Id
     # 判断主类和子类，子类中开始默认全部
@@ -87,6 +94,14 @@ def market(request, category_id, child_id, sort_id):
     elif sort_id == '3':  # 价格最高
         goods = goods.order_by('-price')
 
+    token = request.session.get('token')  # 获取token
+
+    if token:
+        user = User.objects.filter(token=token).first()  # 筛选得到用户集合并取出第一个用户
+        carts = Cart.objects.filter(user=user)
+
+
+
     data = {
 
         'food_types': food_types,
@@ -95,6 +110,7 @@ def market(request, category_id, child_id, sort_id):
         'category_id': category_id,
         'child_id': child_id,
         'sort_id': sort_id,
+        'carts':carts,
     }
     return render(request, 'market/market.html', context=data)
 
@@ -105,13 +121,13 @@ def mine(request):  # 我的
 
     responseData = {}
 
-    if token:   # 登录
+    if token:  # 登录
         user = User.objects.get(token=token)
         responseData['name'] = user.name
         responseData['rank'] = user.rank
         responseData['img'] = '/static/uploadimg/' + user.img
         responseData['isLogin'] = 1
-    else:   # 未登录
+    else:  # 未登录
         responseData['name'] = '未登录'
         responseData['img'] = '/static/uploads/axf.png'
 
@@ -136,7 +152,6 @@ def registe(request):
         user.phone = request.POST.get('phone')
         user.addr = request.POST.get('addr')
 
-
         # 头像
         img_name = user.account + '.png'
         imagePath = os.path.join(settings.MEDIA_ROOT, img_name)
@@ -157,18 +172,17 @@ def registe(request):
         return redirect('myapp:mine')
 
 
-
 def checkaccount(request):
     account = request.GET.get('account')
 
     responseData = {
         'msg': '账号可用',
-        'status': 1 # 1标识可用，-1标识不可用
+        'status': 1  # 1标识可用，-1标识不可用
     }
 
     try:
         user = User.objects.get(account=account)
-        responseData['msg'] = '账号已被占用'
+        responseData['msg'] = '账号已存在'
         responseData['status'] = -1
         return JsonResponse(responseData)
     except:
@@ -189,14 +203,77 @@ def login(request):
 
         try:
             user = User.objects.get(account=account)
-            if user.password == genarate_password(password):    # 登录成功
+            if user.password == genarate_password(password):  # 登录成功
 
                 # 更新token
                 user.token = str(uuid.uuid5(uuid.uuid4(), 'login'))
                 user.save()
                 request.session['token'] = user.token
                 return redirect('myapp:mine')
-            else:   # 登录失败
+            else:  # 登录失败
                 return render(request, 'mine/login.html', context={'passwd_error': '密码错误!'})
         except:
-            return render(request, 'mine/login.html', context={'acount_error':'账号不存在!'})
+            return render(request, 'mine/login.html', context={'acount_error': '账号不存在!'})
+
+
+def addgoods(request):
+    goods_id = request.GET.get('goods_id')
+
+    goods = Goods.objects.get(pk=goods_id)  # 根据商品ID 获取到对应的商品信息
+
+    token = request.session.get('token')
+
+
+    responese_data = {
+
+        'message': '增加成功',
+        'status': 1,
+    }
+
+    if token:
+
+        user = User.objects.get(token=token) # 筛选得到用户集合并取出第一个用户
+
+        carts = Cart.objects.filter(user=user).filter(goods=goods) # 通过商品和用户筛选出对应购物车中的商品
+
+
+        if carts:
+            cart = carts.first()
+            cart.num += 1
+            cart.save()
+            print(cart)
+            responese_data['num'] = cart.num
+        else:
+            cart = Cart()
+            cart.num = 1
+            cart.goods = goods
+            cart.user = user
+            cart.save()
+            responese_data['num'] = cart.num
+
+        return JsonResponse(responese_data)
+    else:
+
+        responese_data['message'] = '未登陆'
+        responese_data['status'] = 0
+        return JsonResponse(responese_data)
+
+
+
+
+
+def subgoods(request):
+
+    goods_id = request.GET.get('goods_id')
+    token = request.session.get('token')
+    user = User.objects.get(token=token)
+    goods = Goods.objects.get(pk=goods_id)
+    carts = Cart.objects.filter(user=user).filter(goods=goods).first()
+    carts.num -= 1
+    carts.save()
+    response_data ={
+        'message':'减去商品成功',
+        'status':1,
+        'num':carts.num,
+    }
+    return JsonResponse(response_data)

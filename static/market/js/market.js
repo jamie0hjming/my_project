@@ -10,7 +10,7 @@ $(function () {
     console.log(type_index);
 
     if (type_index > 0) { // 已经有点击分类
-        console.log('AAAAAAA');
+
         $('.type-slider .type-item').eq(type_index).addClass('active').siblings().removeClass('active')
     } else {    // 没有点击分类
         // 没有点击默认第一个
@@ -18,7 +18,7 @@ $(function () {
         $('.type-slider .type-item:first').addClass('active').siblings().removeClass('active')
     }
     // 分类按钮
-    category_button = false ; // 默认是隐藏
+    category_button = false; // 默认是隐藏
     $('#category_button').click(function () {
         // 取反
         category_button = !category_button;
@@ -43,7 +43,7 @@ $(function () {
         sort_view_hide();
         category_button = false;
         category_view_hide()
-    })
+    });
 
 
     function category_view_show() {
@@ -71,4 +71,68 @@ $(function () {
     }
 
 
+    $('.glyphicon-plus').prev().hide();
+
+    $('.glyphicon-plus').prev().prev().hide();
+
+
+       $('.bt-wrapper .num').each(function () {
+        var num = parseInt($(this).html());
+        if (num){   // 有数据，即有添加购物车
+            $(this).show();
+            $(this).prev().show()
+        }
+    })
+
+    // 加法操作
+    $('.glyphicon-plus').click(function () {
+        var goods_id = $(this).attr('goods_id');// 获取当前点击商品的id
+        var $that = $(this); // 保存 this 以供后面使用
+
+        $.get('/addgoods/', {'goods_id': goods_id}, function (response) {
+            console.log(response.num);
+
+            if (response.status == 1) {
+
+                $that.prev().html(response.num).show();
+                $that.prev().prev().show();
+                console.log('登陆成功')
+            } else if (response.status == 0) {
+
+                // 通过bom方法重定向
+                window.open('/login/', target = "_self")
+            }
+
+
+        })
+    })
+
+});
+
+// 减法操作
+$('.glyphicon-minus').click(function () {
+
+    var goods_id = $(this).attr('goods_id');// 获取当前点击商品的id
+    var $that = $(this); // 保存 this 以供后面使用
+
+    $.get('/subgoods/',{'goods_id':goods_id,},function (response) {
+
+        if (response.status == 1){
+            var num = response.num;
+            if (num > 0){
+                $that.next().html(num)
+            }else{
+                $that.hide();
+                $that.next().hide()
+            }
+        }
+
+
+
+
+
+    })
+
 })
+
+
