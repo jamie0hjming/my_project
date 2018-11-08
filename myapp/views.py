@@ -95,6 +95,7 @@ def market(request, category_id, child_id, sort_id):
         goods = goods.order_by('-price')
 
     token = request.session.get('token')  # 获取token
+    carts = []
 
     if token:
         user = User.objects.filter(token=token).first()  # 筛选得到用户集合并取出第一个用户
@@ -109,8 +110,9 @@ def market(request, category_id, child_id, sort_id):
         'child_type_id_name_list': child_type_id_name_list,
         'category_id': category_id,
         'child_id': child_id,
-        'sort_id': sort_id,
         'carts':carts,
+
+
     }
     return render(request, 'market/market.html', context=data)
 
