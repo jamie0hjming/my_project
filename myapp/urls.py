@@ -14,5 +14,9 @@ urlpatterns = [
     url(r'^login/$', views.login, name='login'),  # 登录
     url(r'^addgoods/$', views.addgoods, name='addgoods'),  # 添加购物车
     url(r'^subgoods/$', views.subgoods, name='subgoods'),  # 购物车减操作
+    url(r'^changecartstatus/$', views.changecartstatus, name='changecartstatus'),  # 修改选中状态
+    url(r'changecartselect/$', views.changecartselect, name='changecartselect'),  # 全选/取消全选
+    url(r'^generateorder/$',views.generateorder,name='generateorder'),  # 订单提交
+    url(r'^order/(\d+)/$', views.order, name='order'),
 
 ]
